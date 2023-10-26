@@ -29,23 +29,12 @@ export default function SearchAppBar() {
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
            
             </IconButton>
-            <Button color="primary">Portfolio</Button>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >               
-            </IconButton>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-          
-              aria-haspopup="true"
-              color="primary"
-            >
-              <AccountCircle />
-            </IconButton>
+            <Button color="primary">Login</Button>
+            
+            
+            <Button color="primary">REGİSTER</Button>
+         
+           
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton

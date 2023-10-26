@@ -19,7 +19,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const apiUrl = "https://api.livecoinwatch.com";
-const apiKey = "2c0f5401-9cdf-4677-991d-b48a53fbbcce";
+const apiKey = "017af663-d62f-47e4-902b-049171b263ef";
 
 function OverviewBox() {
   const [coinData1, setCoinData1] = useState([]);
@@ -130,14 +130,6 @@ function OverviewBox() {
       </TableContainer></Item>
   </Grid>
 </Grid>
-     
-
-
-
-    
-
-
-
      
     </div>
   );
