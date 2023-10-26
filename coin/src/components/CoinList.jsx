@@ -14,6 +14,17 @@ import SearchIcon from "@mui/icons-material/Search";
 import { styled, alpha } from "@mui/material/styles";
 import PanoramaFishEyeIcon from "@mui/icons-material/PanoramaFishEye";
 import CircleIcon from "@mui/icons-material/Circle";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+} from "chart.js";
+import moment from "moment";
+
+ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 const apiUrl = "https://api.livecoinwatch.com";
 const apiKey = "2c0f5401-9cdf-4677-991d-b48a53fbbcce";
@@ -78,6 +89,8 @@ function ListItem({ item, onToggleFavorite }) {
 
 function Home() {
   const [coinData, setCoinData] = useState([]);
+  const [previousData, setPreviousData] = useState([]);
+  const [coinChartData, setCoinChartData] = useState({});
   const [favoriteCount, setFavoriteCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [favoriteCoins, setFavoriteCoins] = useState([]);
@@ -102,7 +115,84 @@ function Home() {
           },
         }
       );
-      setCoinData(response.data);
+      if (previousData.length > 0) {
+        const updatedCoinData = response.data.map((coin, index) => {
+          const previousDayDelta = (previousData[index].delta.day - 1) * 100;
+          const currentDayDelta = (coin.delta.day - 1) * 100;
+
+          if (currentDayDelta > 0) {
+            coin.delta.dayColor = "green";
+          } else if (currentDayDelta < 0) {
+            coin.delta.dayColor = "red";
+          } else {
+            coin.delta.dayColor = "black";
+          }
+
+          return coin;
+        });
+        setCoinData(updatedCoinData);
+      } else {
+        setCoinData(response.data);
+      }
+      setPreviousData(response.data);
+
+      const chartPromises = response.data.map(async (coin) => {
+        const chartResponse = await axios.post(
+          `${apiUrl}/coins/single/history`,
+          {
+            currency: "USD",
+            code: coin.code,
+            start: moment().subtract(7, "days").valueOf(),
+            end: moment().valueOf(),
+            meta: true,
+          },
+          {
+            headers: {
+              "content-type": "application/json",
+              "x-api-key": apiKey,
+            },
+          }
+        );
+        if (!chartResponse || !chartResponse.data.history) {
+          return null;
+        }
+
+        const coinChartData = chartResponse.data.history.map((value) => ({
+          x: value.date,
+          y: value.rate.toFixed(2),
+        }));
+
+        console.log(chartResponse.data);
+
+        var color;
+        {
+          coin.delta.week > 1.0099 ? (color = "green") : (color = "red");
+        }
+
+        setCoinChartData((prevData) => ({
+          ...prevData,
+          [coin.code]: {
+            labels: coinChartData.map((val) =>
+              moment(val.x).format("MMMM Do YYYY, h:mm:ss a")
+            ),
+            datasets: [
+              {
+                label: "Dataset 1",
+                animations: {
+                  y: {
+                    duration: 2000,
+                    delay: 500,
+                  },
+                },
+                data: coinChartData.map((val) => val.y),
+                borderColor: color,
+                backgroundColor: color,
+                fill: 1,
+              },
+            ],
+          },
+        }));
+      });
     } catch (error) {
       console.error("API isteği başarısız oldu", error);
     }
@@ -129,6 +219,30 @@ function Home() {
     }
   };
 
+  const options = {
+    elements: {
+      point: {
+        radius: 0,
+      },
+      line: {
+        tension: 0,
+      },
+    },
+    scales: {
+      x: {
+        display: false,
+      },
+      y: {
+        display: false,
+      },
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  };
+
   return (
     <div style={{ marginTop: "10px" }}>
       <div style={{ display: "flex" }}>
@@ -143,7 +257,11 @@ function Home() {
             },
           }}
         >
-          <Paper elevation={3} style={{ textAlign: "center" }} onClick={() => setShowFavorites(!showFavorites)}>
+          <Paper
+            elevation={3}
+            style={{ textAlign: "center" }}
+            onClick={() => setShowFavorites(!showFavorites)}
+          >
             <div style={{ align: "left" }}>
               {" "}
               <div style={{ fontSize: "25px", width: "50px" }}>
@@ -192,7 +310,10 @@ function Home() {
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      <ListItem item={coin} onToggleFavorite={toggleFavoriteCount} />
+                      <ListItem
+                        item={coin}
+                        onToggleFavorite={toggleFavoriteCount}
+                      />
                       <div style={{ marginLeft: "8px" }}>{coin.rank}</div>
                     </TableCell>
                     <TableCell style={{}}>
@@ -207,7 +328,9 @@ function Home() {
                           }}
                         />
                         <div>
-                          <span style={{ fontWeight: "bold" }}>{coin.code}</span>
+                          <span style={{ fontWeight: "bold" }}>
+                            {coin.code}
+                          </span>
                           <br />
                           <div style={{}}>{coin.name}</div>
                         </div>
@@ -225,7 +348,8 @@ function Home() {
                     <TableCell
                       align="right"
                       style={{
-                        color: (coin.delta.week - 1) * 100 < 0 ? "red" : "green",
+                        color:
+                          (coin.delta.week - 1) * 100 < 0 ? "red" : "green",
                       }}
                     >
                       {`${((coin.delta.week - 1) * 100).toFixed(2)}%`}
@@ -265,7 +389,10 @@ function Home() {
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      <ListItem item={coin} onToggleFavorite={toggleFavoriteCount} />
+                      <ListItem
+                        item={coin}
+                        onToggleFavorite={toggleFavoriteCount}
+                      />
                       <div style={{ marginLeft: "8px" }}>{coin.rank}</div>
                     </TableCell>
                     <TableCell style={{}}>
@@ -280,7 +407,9 @@ function Home() {
                           }}
                         />
                         <div>
-                          <span style={{ fontWeight: "bold" }}>{coin.code}</span>
+                          <span style={{ fontWeight: "bold" }}>
+                            {coin.code}
+                          </span>
                           <br />
                           <div style={{}}>{coin.name}</div>
                         </div>
@@ -298,7 +427,8 @@ function Home() {
                     <TableCell
                       align="right"
                       style={{
-                        color: (coin.delta.week - 1) * 100 < 0 ? "red" : "green",
+                        color:
+                          (coin.delta.week - 1) * 100 < 0 ? "red" : "green",
                       }}
                     >
                       {`${((coin.delta.week - 1) * 100).toFixed(2)}%`}
@@ -329,7 +459,25 @@ function Home() {
                         }
                       })()}
                     </TableCell>
-                    <TableCell align="right"></TableCell>
+                    <TableCell align="right">
+                      <div
+                        style={{
+                          width: "160px",
+                          height: "80px",
+                          float: "right",
+                        }}
+                      >
+                        <Line
+                          data={
+                            coinChartData[coin.code] || {
+                              labels: [],
+                              datasets: [],
+                            }
+                          }
+                          options={options}
+                        ></Line>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
           </TableBody>
