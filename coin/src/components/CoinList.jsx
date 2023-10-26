@@ -14,10 +14,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import { styled, alpha } from "@mui/material/styles";
 import PanoramaFishEyeIcon from "@mui/icons-material/PanoramaFishEye";
 import CircleIcon from "@mui/icons-material/Circle";
-import Button from '@mui/material/Button';
 
 const apiUrl = "https://api.livecoinwatch.com";
-const apiKey = "017af663-d62f-47e4-902b-049171b263ef";
+const apiKey = "2c0f5401-9cdf-4677-991d-b48a53fbbcce";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -48,7 +47,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -80,11 +78,10 @@ function ListItem({ item, onToggleFavorite }) {
 
 function Home() {
   const [coinData, setCoinData] = useState([]);
-  const [previousData, setPreviousData] = useState([]);
   const [favoriteCount, setFavoriteCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [favoriteCoins, setFavoriteCoins] = useState([]);
-
+  const [showFavorites, setShowFavorites] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -105,27 +102,7 @@ function Home() {
           },
         }
       );
-      if (previousData.length > 0) {
-        const updatedCoinData = response.data.map((coin, index) => {
-          const previousDayDelta = (previousData[index].delta.day - 1) * 100;
-          const currentDayDelta = (coin.delta.day - 1) * 100;
-
-          if (currentDayDelta > previousDayDelta) {
-            coin.delta.dayColor = "green";
-          } else if (currentDayDelta < previousDayDelta) {
-            coin.delta.dayColor = "red";
-          } else {
-            coin.delta.dayColor = "black";
-          }
-
-          return coin;
-        });
-        setCoinData(updatedCoinData);
-      } else {
-        setCoinData(response.data);
-      }
-
-      setPreviousData(response.data);
+      setCoinData(response.data);
     } catch (error) {
       console.error("API isteği başarısız oldu", error);
     }
@@ -145,23 +122,18 @@ function Home() {
   const toggleFavoriteCount = (item, isFavorite) => {
     if (isFavorite) {
       setFavoriteCount(favoriteCount + 1);
-      setFavoriteCoins([...favoriteCoins, item]); // Add to favorite coins list
+      setFavoriteCoins([...favoriteCoins, item]);
+
     } else {
       setFavoriteCount(favoriteCount - 1);
-      setFavoriteCoins(favoriteCoins.filter((coin) => coin !== item)); // Remove from favorite coins list
+      setFavoriteCoins(favoriteCoins.filter((coin) => coin !== item));
     }
+   
   };
-
-
-  const filteredCoins = coinData.filter((coin) =>
-  favoriteCoins.includes(coin)
-); 
-
-
+ useEffect(()=>{console.log(favoriteCoins)},[favoriteCoins]);
   return (
     <div style={{ marginTop: "10px" }}>
       <div style={{ display: "flex" }}>
-        
         <Box
           sx={{
             display: "flex",
@@ -173,7 +145,7 @@ function Home() {
             },
           }}
         >
-          <Paper elevation={3} style={{ textAlign: "center" }}>
+          <Paper elevation={3} style={{ textAlign: "center" }} onClick={() => setShowFavorites(!showFavorites)}>
             <div style={{ align: "left" }}>
               {" "}
               <div style={{ fontSize: "25px", width: "50px" }}>
@@ -215,86 +187,88 @@ function Home() {
             </TableRow>
           </TableHead>
           <TableBody>
-  {coinData
-    .filter((coin) =>
-      coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      coin.code.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .map((coin) => (
-      <TableRow
-        key={coin.name}
-        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-      >
-        <TableCell component="th" scope="row">
-          <ListItem item={coin} onToggleFavorite={toggleFavoriteCount} />
-          <div style={{ marginLeft: "8px" }}>{coin.rank}</div>
-        </TableCell>
-        <TableCell style={{}}>
-          <div style={{ display: "flex" }}>
-            <Image
-              src={coin.png32}
-              roundedCircle
-              style={{
-                marginRight: "10px",
-                width: "40px",
-                marginTop: "0px",
-              }}
-            />
-            <div>
-              <span style={{ fontWeight: "bold" }}>{coin.code}</span>
-              <br />
-              <div style={{}}>{coin.name}</div>
-            </div>
-          </div>
-        </TableCell>
-        <TableCell align="right">${coin.rate.toFixed(2)}</TableCell>
-        <TableCell
-          align="right"
-          style={{
-            color: (coin.delta.day - 1) * 100 < 0 ? "red" : "green",
-          }}
-        >
-          {`${((coin.delta.day - 1) * 100).toFixed(2)}%`}
-        </TableCell>
-        <TableCell
-          align="right"
-          style={{
-            color: (coin.delta.week - 1) * 100 < 0 ? "red" : "green",
-          }}
-        >
-          {`${((coin.delta.week - 1) * 100).toFixed(2)}%`}
-        </TableCell>
-        <TableCell align="right">
-          {(() => {
-            if (coin.volume >= 1000000000) {
-              return `$${(coin.volume / 1000000000).toFixed(2)} B`;
-            } else if (coin.volume >= 1000000) {
-              return `$${(coin.volume / 1000000).toFixed(2)} M`;
-            } else if (coin.volume >= 1000) {
-              return `$${(coin.volume / 1000).toFixed(2)} K`;
-            } else {
-              return `$${coin.volume}`;
-            }
-          })()}
-        </TableCell>
-        <TableCell align="right">
-          {(() => {
-            if (coin.volume >= 1000000000) {
-              return `$${(coin.cap / 1000000000).toFixed(2)} B`;
-            } else if (coin.cap >= 1000000) {
-              return `$${(coin.cap / 1000000).toFixed(2)} M`;
-            } else if (coin.cap >= 1000) {
-              return `$${(coin.cap / 1000).toFixed(2)} K`;
-            } else {
-              return `$${coin.cap}`;
-            }
-          })()}
-        </TableCell>
-        <TableCell align="right"></TableCell>
-      </TableRow>
-    ))}
-</TableBody>
-
+            {coinData
+              .filter((coin) =>
+                coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                coin.code.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .filter(
+                (coin) => (showFavorites ? favoriteCoins.includes(coin) : true)
+              )
+              .map((coin) => (
+                <TableRow
+                  key={coin.name}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    <ListItem item={coin} onToggleFavorite={toggleFavoriteCount} />
+                    <div style={{ marginLeft: "8px" }}>{coin.rank}</div>
+                  </TableCell>
+                  <TableCell style={{}}>
+                    <div style={{ display: "flex" }}>
+                      <Image
+                        src={coin.png32}
+                        roundedCircle
+                        style={{
+                          marginRight: "10px",
+                          width: "40px",
+                          marginTop: "0px",
+                        }}
+                      />
+                      <div>
+                        <span style={{ fontWeight: "bold" }}>{coin.code}</span>
+                        <br />
+                        <div style={{}}>{coin.name}</div>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell align="right">${coin.rate.toFixed(2)}</TableCell>
+                  <TableCell
+                    align="right"
+                    style={{
+                      color: (coin.delta.day - 1) * 100 < 0 ? "red" : "green",
+                    }}
+                  >
+                    {`${((coin.delta.day - 1) * 100).toFixed(2)}%`}
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    style={{
+                      color: (coin.delta.week - 1) * 100 < 0 ? "red" : "green",
+                    }}
+                  >
+                    {`${((coin.delta.week - 1) * 100).toFixed(2)}%`}
+                  </TableCell>
+                  <TableCell align="right">
+                    {(() => {
+                      if (coin.volume >= 1000000000) {
+                        return `$${(coin.volume / 1000000000).toFixed(2)} B`;
+                      } else if (coin.volume >= 1000000) {
+                        return `$${(coin.volume / 1000000).toFixed(2)} M`;
+                      } else if (coin.volume >= 1000) {
+                        return `$${(coin.volume / 1000).toFixed(2)} K`;
+                      } else {
+                        return `$${coin.volume}`;
+                      }
+                    })()}
+                  </TableCell>
+                  <TableCell align="right">
+                    {(() => {
+                      if (coin.volume >= 1000000000) {
+                        return `$${(coin.cap / 1000000000).toFixed(2)} B`;
+                      } else if (coin.cap >= 1000000) {
+                        return `$${(coin.cap / 1000000).toFixed(2)} M`;
+                      } else if (coin.cap >= 1000) {
+                        return `$${(coin.cap / 1000).toFixed(2)} K`;
+                      } else {
+                        return `$${coin.cap}`;
+                      }
+                    })()}
+                  </TableCell>
+                  <TableCell align="right"></TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
         </Table>
       </TableContainer>
     </div>
