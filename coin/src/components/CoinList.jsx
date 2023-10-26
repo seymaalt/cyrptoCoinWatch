@@ -123,14 +123,12 @@ function Home() {
     if (isFavorite) {
       setFavoriteCount(favoriteCount + 1);
       setFavoriteCoins([...favoriteCoins, item]);
-
     } else {
       setFavoriteCount(favoriteCount - 1);
       setFavoriteCoins(favoriteCoins.filter((coin) => coin !== item));
     }
-   
   };
- useEffect(()=>{console.log(favoriteCoins)},[favoriteCoins]);
+
   return (
     <div style={{ marginTop: "10px" }}>
       <div style={{ display: "flex" }}>
@@ -187,87 +185,153 @@ function Home() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {coinData
-              .filter((coin) =>
-                coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                coin.code.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .filter(
-                (coin) => (showFavorites ? favoriteCoins.includes(coin) : true)
-              )
-              .map((coin) => (
-                <TableRow
-                  key={coin.name}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    <ListItem item={coin} onToggleFavorite={toggleFavoriteCount} />
-                    <div style={{ marginLeft: "8px" }}>{coin.rank}</div>
-                  </TableCell>
-                  <TableCell style={{}}>
-                    <div style={{ display: "flex" }}>
-                      <Image
-                        src={coin.png32}
-                        roundedCircle
-                        style={{
-                          marginRight: "10px",
-                          width: "40px",
-                          marginTop: "0px",
-                        }}
-                      />
-                      <div>
-                        <span style={{ fontWeight: "bold" }}>{coin.code}</span>
-                        <br />
-                        <div style={{}}>{coin.name}</div>
+            {showFavorites
+              ? favoriteCoins.map((coin) => (
+                  <TableRow
+                    key={coin.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      <ListItem item={coin} onToggleFavorite={toggleFavoriteCount} />
+                      <div style={{ marginLeft: "8px" }}>{coin.rank}</div>
+                    </TableCell>
+                    <TableCell style={{}}>
+                      <div style={{ display: "flex" }}>
+                        <Image
+                          src={coin.png32}
+                          roundedCircle
+                          style={{
+                            marginRight: "10px",
+                            width: "40px",
+                            marginTop: "0px",
+                          }}
+                        />
+                        <div>
+                          <span style={{ fontWeight: "bold" }}>{coin.code}</span>
+                          <br />
+                          <div style={{}}>{coin.name}</div>
+                        </div>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell align="right">${coin.rate.toFixed(2)}</TableCell>
-                  <TableCell
-                    align="right"
-                    style={{
-                      color: (coin.delta.day - 1) * 100 < 0 ? "red" : "green",
-                    }}
+                    </TableCell>
+                    <TableCell align="right">${coin.rate.toFixed(2)}</TableCell>
+                    <TableCell
+                      align="right"
+                      style={{
+                        color: (coin.delta.day - 1) * 100 < 0 ? "red" : "green",
+                      }}
+                    >
+                      {`${((coin.delta.day - 1) * 100).toFixed(2)}%`}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      style={{
+                        color: (coin.delta.week - 1) * 100 < 0 ? "red" : "green",
+                      }}
+                    >
+                      {`${((coin.delta.week - 1) * 100).toFixed(2)}%`}
+                    </TableCell>
+                    <TableCell align="right">
+                      {(() => {
+                        if (coin.volume >= 1000000000) {
+                          return `$${(coin.volume / 1000000000).toFixed(2)} B`;
+                        } else if (coin.volume >= 1000000) {
+                          return `$${(coin.volume / 1000000).toFixed(2)} M`;
+                        } else if (coin.volume >= 1000) {
+                          return `$${(coin.volume / 1000).toFixed(2)} K`;
+                        } else {
+                          return `$${coin.volume}`;
+                        }
+                      })()}
+                    </TableCell>
+                    <TableCell align="right">
+                      {(() => {
+                        if (coin.volume >= 1000000000) {
+                          return `$${(coin.cap / 1000000000).toFixed(2)} B`;
+                        } else if (coin.cap >= 1000000) {
+                          return `$${(coin.cap / 1000000).toFixed(2)} M`;
+                        } else if (coin.cap >= 1000) {
+                          return `$${(coin.cap / 1000).toFixed(2)} K`;
+                        } else {
+                          return `$${coin.cap}`;
+                        }
+                      })()}
+                    </TableCell>
+                    <TableCell align="right"></TableCell>
+                  </TableRow>
+                ))
+              : coinData.map((coin) => (
+                  <TableRow
+                    key={coin.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    {`${((coin.delta.day - 1) * 100).toFixed(2)}%`}
-                  </TableCell>
-                  <TableCell
-                    align="right"
-                    style={{
-                      color: (coin.delta.week - 1) * 100 < 0 ? "red" : "green",
-                    }}
-                  >
-                    {`${((coin.delta.week - 1) * 100).toFixed(2)}%`}
-                  </TableCell>
-                  <TableCell align="right">
-                    {(() => {
-                      if (coin.volume >= 1000000000) {
-                        return `$${(coin.volume / 1000000000).toFixed(2)} B`;
-                      } else if (coin.volume >= 1000000) {
-                        return `$${(coin.volume / 1000000).toFixed(2)} M`;
-                      } else if (coin.volume >= 1000) {
-                        return `$${(coin.volume / 1000).toFixed(2)} K`;
-                      } else {
-                        return `$${coin.volume}`;
-                      }
-                    })()}
-                  </TableCell>
-                  <TableCell align="right">
-                    {(() => {
-                      if (coin.volume >= 1000000000) {
-                        return `$${(coin.cap / 1000000000).toFixed(2)} B`;
-                      } else if (coin.cap >= 1000000) {
-                        return `$${(coin.cap / 1000000).toFixed(2)} M`;
-                      } else if (coin.cap >= 1000) {
-                        return `$${(coin.cap / 1000).toFixed(2)} K`;
-                      } else {
-                        return `$${coin.cap}`;
-                      }
-                    })()}
-                  </TableCell>
-                  <TableCell align="right"></TableCell>
-                </TableRow>
-              ))}
+                    <TableCell component="th" scope="row">
+                      <ListItem item={coin} onToggleFavorite={toggleFavoriteCount} />
+                      <div style={{ marginLeft: "8px" }}>{coin.rank}</div>
+                    </TableCell>
+                    <TableCell style={{}}>
+                      <div style={{ display: "flex" }}>
+                        <Image
+                          src={coin.png32}
+                          roundedCircle
+                          style={{
+                            marginRight: "10px",
+                            width: "40px",
+                            marginTop: "0px",
+                          }}
+                        />
+                        <div>
+                          <span style={{ fontWeight: "bold" }}>{coin.code}</span>
+                          <br />
+                          <div style={{}}>{coin.name}</div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell align="right">${coin.rate.toFixed(2)}</TableCell>
+                    <TableCell
+                      align="right"
+                      style={{
+                        color: (coin.delta.day - 1) * 100 < 0 ? "red" : "green",
+                      }}
+                    >
+                      {`${((coin.delta.day - 1) * 100).toFixed(2)}%`}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      style={{
+                        color: (coin.delta.week - 1) * 100 < 0 ? "red" : "green",
+                      }}
+                    >
+                      {`${((coin.delta.week - 1) * 100).toFixed(2)}%`}
+                    </TableCell>
+                    <TableCell align="right">
+                      {(() => {
+                        if (coin.volume >= 1000000000) {
+                          return `$${(coin.volume / 1000000000).toFixed(2)} B`;
+                        } else if (coin.volume >= 1000000) {
+                          return `$${(coin.volume / 1000000).toFixed(2)} M`;
+                        } else if (coin.volume >= 1000) {
+                          return `$${(coin.volume / 1000).toFixed(2)} K`;
+                        } else {
+                          return `$${coin.volume}`;
+                        }
+                      })()}
+                    </TableCell>
+                    <TableCell align="right">
+                      {(() => {
+                        if (coin.volume >= 1000000000) {
+                          return `$${(coin.cap / 1000000000).toFixed(2)} B`;
+                        } else if (coin.cap >= 1000000) {
+                          return `$${(coin.cap / 1000000).toFixed(2)} M`;
+                        } else if (coin.cap >= 1000) {
+                          return `$${(coin.cap / 1000).toFixed(2)} K`;
+                        } else {
+                          return `$${coin.cap}`;
+                        }
+                      })()}
+                    </TableCell>
+                    <TableCell align="right"></TableCell>
+                  </TableRow>
+                ))}
           </TableBody>
         </Table>
       </TableContainer>
