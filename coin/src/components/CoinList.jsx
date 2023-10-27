@@ -29,7 +29,7 @@ import moment from "moment";
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 const apiUrl = "https://api.livecoinwatch.com";
-const apiKey = "017af663-d62f-47e4-902b-049171b263ef";
+const apiKey = "aff350dd-38c3-4fad-8f9d-8230089b3dde";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
