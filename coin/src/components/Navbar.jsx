@@ -1,64 +1,40 @@
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import MoreIcon from '@mui/icons-material/MoreVert';
-import IconButton from '@mui/material/IconButton';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import Button from '@mui/material/Button';
-import Logo from '../assets/Logo.png';
-
-
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import MoreIcon from "@mui/icons-material/MoreVert";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import Logo from "../assets/Logo.png";
+import LoginModal from "./LoginModal.jsx";
+import RegisterModel from "./RegisterModal.jsx";
 
 export default function SearchAppBar() {
   return (
-    <Box sx={{ flexGrow: 1 }} >
-       <AppBar sx={{ backgroundColor: 'white' }}>
-        <Toolbar>          
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar sx={{ backgroundColor: "white" }}>
+        <Toolbar>
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ flexGrow: 1, display: "flex" }}
           >
-            <img src={Logo} style={{width:"240px",height:"70px"}}></img>
-           
+            <img src={Logo} style={{ width: "240px", height: "70px" }}></img>
           </Typography>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-           
-            </IconButton>
-            <Button color="primary">Portfolio</Button>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >               
-            </IconButton>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
           
-              aria-haspopup="true"
-              color="primary"
-            >
-              <AccountCircle />
-            </IconButton>
+          <Box sx={{ flexGrow: 1 }} />
+
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <Button color="primary">
+              <LoginModal />
+            </Button>
+
+            <Button color="primary">
+              <RegisterModel />
+            </Button>
+
           </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
-         
-         
         </Toolbar>
       </AppBar>
     </Box>
