@@ -11,6 +11,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import axios from 'axios'
 
 function Copyright(props) {
   return (
@@ -30,14 +33,83 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
+
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: ''
+  })
+
+  const [errors, setErrors] = useState({})
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData, [name]: value
+    })
+  }
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const name = data.get('name')
+    const email = data.get('email')
+    const password = data.get('password')
+
+
+    const validationErrors = {}
+    if (!name.trim()) {
+      validationErrors.username = "username is required"
+    }
+
+    if (!email.trim()) {
+      validationErrors.email = "email is required"
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      validationErrors.email = "email is not valid"
+    }
+
+    if (!password.trim()) {
+      validationErrors.password = "password is required"
+    } else if (!/^(?=.*[A-Z])(?=.*[a-z])/.test(password)) {
+      validationErrors.password = "Bir büyük bir küçük harf içermeli"
+    } else if (!/^(?=.*\d)/.test(password)) {
+      validationErrors.password = "Sayi içermeli"
+    } else if (!/^(?=.*[.,;@$!%*?&])/.test(password)) {
+      validationErrors.password = "özel karaktere içermeli"
+    } else if (!/^.{8,12}$/.test(password)) {
+      validationErrors.password = "8-12 karakter içermeli"
+    }
+
+    setErrors(validationErrors)
+
+    if (Object.keys(validationErrors).length === 0) {
+      const name = formData.name
+      const email = formData.email
+      const password = formData.password
+      //alert("Form Submitted successfully")
+
+
+
+      console.log({
+        email: data.get('email'),
+        password: data.get('password'),
+      });
+
+      axios.post('http://localhost:3001/register', { name, email, password })
+        .then(result => {
+          console.log(result)
+          if (result.data == "Bu Email Zaten Mevcut!!!") {
+            alert("Bu Email Zaten Mevcut!!!")
+          }else{
+            alert("Form Submitted successfully")
+          }
+          //navigate('/login')
+        })
+        .catch(err => console.log(err))
+
+        
+    }
   };
+
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -62,35 +134,41 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="Name"
+                  name="name"
                   required
                   fullWidth
-                  id="Name"
+                  onChange={handleChange}
+                  id="name"
                   label="Name"
                   autoFocus
                 />
+                {errors.username && <span>{errors.username}</span>}
               </Grid>
-            
+
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
                   id="email"
+                  onChange={handleChange}
                   label="Email Address"
                   name="email"
                   autoComplete="email"
                 />
+                {errors.email && <span>{errors.email}</span>}
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
+                  onChange={handleChange}
                   name="password"
                   label="Password"
                   type="password"
                   id="password"
                   autoComplete="new-password"
                 />
+                {errors.password && <span>{errors.password}</span>}
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel

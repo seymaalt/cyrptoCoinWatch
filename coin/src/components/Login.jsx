@@ -12,6 +12,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+import axios from 'axios'
+
 
 function Copyright(props) {
   return (
@@ -30,15 +34,83 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignIn() {
+const Login = () => {
+
+
+  //const navigate = useNavigate()
+  const [email, setEmail] = useState()
+  const [password, setPassword] = useState()
+  const [rememberMe, setRememberMe] = useState(false);
+  const [location, setLocation] = useState("/");
+
+  //let navigate = useNavigate();
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    // Sayfa yüklendiğinde LocalStorage'dan verileri kontrol et
+    const storedemail = localStorage.getItem('email');
+    const storedPassword = localStorage.getItem('password');
+    const storedRememberMe = localStorage.getItem('rememberMe') === 'true';
+
+    if (storedemail && storedPassword && storedRememberMe) {
+      setEmail(storedemail);
+      setPassword(storedPassword);
+      setRememberMe(storedRememberMe);
+    }
+
+  }, []);
+
+
+  const handleEmailChange = (e) => {
+    const { value } = e.target;
+    setEmail(value);
+
+    // Eğer email LocalStorage'da kayıtlı ise, ilgili parolayı al
+    const savedPassword = localStorage.getItem(value);
+    if (savedPassword) {
+      setPassword(savedPassword);
+    }
+  };
+
+  const handleCheckboxChange = () => {
+    setRememberMe(!rememberMe);
+  };
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const email = data.get('email')
+    const password = data.get('password')
+    axios.post('http://localhost:3001/login', { email, password })
+      .then(result => {
+        console.log(result)
+        if (result.data == "Success") {
+          console.log({
+            email: data.get('email'),
+            password: data.get('password'),
+          });
+          //navigate(setLocation(""));
+          alert("Form Submitted successfully")
+          if (rememberMe) {
+            localStorage.setItem('email', email);
+            localStorage.setItem('password', password);
+            localStorage.setItem('rememberMe', true);
+          } else {
+            // Beni Unutma seçeneği işaretli değilse LocalStorage'dan verileri sil
+            localStorage.removeItem('email');
+            localStorage.removeItem('password');
+            localStorage.removeItem('rememberMe');
+          }
+
+        }
+      })
+      .catch(err => console.log(err))
+
+
   };
+
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -80,7 +152,7 @@ export default function SignIn() {
               autoComplete="current-password"
             />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={<Checkbox value="remember" color="primary" type="checkbox" checked={rememberMe} onChange={handleCheckboxChange} />}
               label="Remember me"
             />
             <Button
@@ -110,3 +182,5 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
+
+export default Login
