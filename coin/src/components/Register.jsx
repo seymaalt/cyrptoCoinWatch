@@ -10,7 +10,14 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import OutlinedInput from "@mui/material/OutlinedInput";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import axios from 'axios'
@@ -33,6 +40,9 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const [formData, setFormData] = useState({
     username: '',
@@ -132,42 +142,70 @@ export default function SignUp() {
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <TextField
-                  autoComplete="given-name"
-                  name="name"
-                  required
-                  fullWidth
-                  onChange={handleChange}
-                  id="name"
-                  label="Name"
-                  autoFocus
-                />
+              <FormControl sx={{ m: 1, width: "40ch" }} variant="outlined">
+                  <InputLabel htmlFor="outlined-adornment-password">
+                    Name
+                  </InputLabel>
+                  <OutlinedInput
+                    required
+                    fullWidth
+                    id="Name"
+                    onChange={handleChange}
+                    name = "name"
+                    type="text"
+                    label="Password"
+                  />
+                </FormControl>
                 {errors.username && <span>{errors.username}</span>}
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  onChange={handleChange}
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                />
+              <FormControl sx={{ m: 1, width: "40ch" }} variant="outlined">
+                  <InputLabel htmlFor="outlined-adornment-password">
+                    Email
+                  </InputLabel>
+                  <OutlinedInput
+                    required
+                    fullWidth
+                    onChange={handleChange}
+                    id="email"
+                    type="text"
+                    name = "email"
+                    label="email"
+                  />
+                </FormControl>
                 {errors.email && <span>{errors.email}</span>}
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  onChange={handleChange}
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
+              <FormControl sx={{ m: 1, width: "40ch" }} variant="outlined">
+                  <InputLabel htmlFor="outlined-adornment-password">
+                    Password
+                  </InputLabel>
+                  <OutlinedInput
+                    required
+                    fullWidth
+                    onChange={handleChange}
+                    id="outlined-adornment-password"
+                    name = "password"
+                    type={showPassword ? "text" : "password"}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <VisibilityIcon />
+                          ) : (
+                            <VisibilityOffIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Password"
+                  />
+                </FormControl>
                 {errors.password && <span>{errors.password}</span>}
               </Grid>
               <Grid item xs={12}>
