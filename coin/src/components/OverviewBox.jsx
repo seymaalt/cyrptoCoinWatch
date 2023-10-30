@@ -1,39 +1,138 @@
-/*return (
-  <div>
-    <h1>Coin List</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th></th>
-          <th>Name</th>
-          <th>Symbol</th>
-        </tr>
-      </thead>
-      <tbody>
-        {coinData.map((coin) => (
-          <tr key={coin.id}>
-             
-            <td>{coin.rank}</td>
-            <td> 
-          </td>
-           <td>
-            <Image src={coin.png32} roundedCircle />
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { experimentalStyled as styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Grid from '@mui/material/Grid';
 
-              </td>
-            <td>
-              <a  target="_blank" rel="noopener noreferrer">
-                {coin.name}
-              </a>
-            </td>
-            <td>
-              <a  target="_blank" rel="noopener noreferrer">
-                {coin.rate}
-              </a>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);*/
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
+const apiUrl = "https://api.livecoinwatch.com";
+const apiKey = "24782b95-0d2c-4dc3-b7cb-c3ab7b80de6b";
+
+function OverviewBox() {
+  const [coinData1, setCoinData1] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.post(
+        `${apiUrl}/overview`,
+        {
+          currency: "USD",
+        },
+        {
+          headers: {
+            "content-type": "application/json",
+            "x-api-key": apiKey,
+          },
+        }
+      );
+
+      setCoinData1([response]);
+    } catch (error) {
+      console.error("API isteği başarısız oldu", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  return (
+    <div style={{ marginBottom: "10px" }}>
+      <Grid container spacing={3}>
+  <Grid item xs>
+    <Item> <TableContainer component={Paper}>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell style={{ fontWeight: "bold" }}>Market Cap</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {coinData1.map((row) => (
+              <TableRow
+                key={row.name}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {`$${row.data.cap.toLocaleString()}`}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer></Item>
+  </Grid>
+  <Grid item xs>
+    <Item>  <TableContainer component={Paper}>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell style={{ fontWeight: "bold" }}>Liquidity</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {coinData1.map((row) => (
+              <TableRow
+                key={row.name}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {`$${row.data.liquidity.toLocaleString()}`}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer></Item>
+  </Grid>
+  <Grid item xs>
+    <Item><TableContainer component={Paper}>
+        <Table  aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell style={{ fontWeight: "bold" }}>24h Volume</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {coinData1.map((row) => (
+              <TableRow
+                key={row.name}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {`$${row.data.volume.toLocaleString()}`}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer></Item>
+  </Grid>
+</Grid>
+     
+    </div>
+  );
+}  
+
+export default OverviewBox;
