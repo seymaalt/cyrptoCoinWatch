@@ -22,8 +22,6 @@ import {
   LinearScale,
   PointElement,
 } from "chart.js";
-
-
 import moment from "moment";
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
@@ -118,20 +116,7 @@ function Home() {
         }
       );
       if (previousData.length > 0) {
-        const updatedCoinData = response.data.map((coin, index) => {
-          const previousDayDelta = (previousData[index].delta.day - 1) * 100;
-          const currentDayDelta = (coin.delta.day - 1) * 100;
-
-          if (currentDayDelta > 0) {
-            coin.delta.dayColor = "green";
-          } else if (currentDayDelta < 0) {
-            coin.delta.dayColor = "red";
-          } else {
-            coin.delta.dayColor = "black";
-          }
-
-          return coin;
-        });
+        const updatedCoinData = response.data.map(coin);
         setCoinData(updatedCoinData);
       } else {
         setCoinData(response.data);
@@ -164,11 +149,9 @@ function Home() {
           y: value.rate.toFixed(8),
         }));
 
-        console.log(chartResponse.data);
-
         var color;
         {
-          coin.delta.week > 1.0099 ? (color = "green") : (color = "red");
+          coin.delta.week > 1 ? (color = "green") : (color = "red");
         }
 
         setCoinChartData((prevData) => ({
@@ -179,17 +162,9 @@ function Home() {
             ),
             datasets: [
               {
-                label: "Dataset 1",
-                animations: {
-                  y: {
-                    duration: 2000,
-                    delay: 500,
-                  },
-                },
                 data: coinChartData.map((val) => val.y),
                 borderColor: color,
                 backgroundColor: color,
-                fill: 1,
               },
             ],
           },
@@ -200,13 +175,12 @@ function Home() {
     }
   };
 
-
   useEffect(() => {
     fetchData();
 
     const intervalId = setInterval(() => {
       fetchData();
-    }, 100000);
+    }, 1000);
     return () => {
       clearInterval(intervalId);
     };
@@ -291,7 +265,7 @@ function Home() {
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
-              <TableCell> Kripto Para</TableCell>
+              <TableCell>Kripto Para</TableCell>
               <TableCell align="right">Fiyat</TableCell>
               <TableCell align="right">24 Saatlik</TableCell>
               <TableCell align="right">Haftalık</TableCell>
