@@ -220,7 +220,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="./Login.jsx" variant="body2">
+                <Link href="" variant="body2">
                   Zaten bir hesabım var.
                 </Link>
               </Grid>

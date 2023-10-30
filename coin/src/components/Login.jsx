@@ -160,7 +160,7 @@ const Login = () => {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="" variant="body2">
                   {"Hesabınız yok mu? Üye olun"}
                 </Link>
               </Grid>
