@@ -12,7 +12,7 @@ export default function TransitionsModal() {
 
   return (
     <div>
-      <TriggerButton onClick={handleOpen} style={{ backgroundColor: "#1976D2" ,color:"white"}}>Register</TriggerButton>
+      <TriggerButton onClick={handleOpen} style={{ backgroundColor: "#1976D2", color: "white" }}>Üye Ol</TriggerButton>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -23,7 +23,7 @@ export default function TransitionsModal() {
       >
         <Fade in={open}>
           <ModalContent sx={style}>
-          <CloseButton onClick={handleClose}>X</CloseButton>
+            <CloseButton onClick={handleClose}>X</CloseButton>
             <Register></Register>
           </ModalContent>
         </Fade>
@@ -102,9 +102,8 @@ const ModalContent = styled(Box)(
   background-color: ${theme.palette.mode === 'dark' ? grey[900] : '#FFF'};
   border-radius: 8px;
   border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-  box-shadow: 0px 4px 12px ${
-    theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.50)' : 'rgba(0,0,0, 0.20)'
-  };
+  box-shadow: 0px 4px 12px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.50)' : 'rgba(0,0,0, 0.20)'
+    };
   padding: 1rem;
   color: ${theme.palette.mode === 'dark' ? grey[50] : grey[900]};
   font-family: IBM Plex Sans, sans-serif;
@@ -161,7 +160,7 @@ const TriggerButton = styled(Button)(
 );
 
 const CloseButton = styled(Button)(
-    ({ theme }) => `
+  ({ theme }) => `
     position: absolute;
     top: 10px;
     right: 10px;
@@ -175,4 +174,4 @@ const CloseButton = styled(Button)(
       color: ${theme.palette.mode === 'dark' ? grey[50] : grey[900]};
     }
   `
-  );
+);

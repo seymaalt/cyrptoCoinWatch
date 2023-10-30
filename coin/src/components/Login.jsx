@@ -21,8 +21,8 @@ function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="">
+        Smurf Coin
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -30,20 +30,15 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 const Login = () => {
 
-
-  //const navigate = useNavigate()
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
   const [rememberMe, setRememberMe] = useState(false);
   const [location, setLocation] = useState("/");
 
-  //let navigate = useNavigate();
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -65,7 +60,6 @@ const Login = () => {
     const { value } = e.target;
     setEmail(value);
 
-    // Eğer email LocalStorage'da kayıtlı ise, ilgili parolayı al
     const savedPassword = localStorage.getItem(value);
     if (savedPassword) {
       setPassword(savedPassword);
@@ -90,14 +84,12 @@ const Login = () => {
             email: data.get('email'),
             password: data.get('password'),
           });
-          //navigate(setLocation(""));
-          alert("Form Submitted successfully")
+          alert("Form başarıyla gönderildi")
           if (rememberMe) {
             localStorage.setItem('email', email);
             localStorage.setItem('password', password);
             localStorage.setItem('rememberMe', true);
           } else {
-            // Beni Unutma seçeneği işaretli değilse LocalStorage'dan verileri sil
             localStorage.removeItem('email');
             localStorage.removeItem('password');
             localStorage.removeItem('rememberMe');
@@ -106,8 +98,6 @@ const Login = () => {
         }
       })
       .catch(err => console.log(err))
-
-
   };
 
 
@@ -128,7 +118,7 @@ const Login = () => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Giriş Yap
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -136,7 +126,7 @@ const Login = () => {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="E-Posta"
               name="email"
               autoComplete="email"
               autoFocus
@@ -146,14 +136,14 @@ const Login = () => {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Şifre"
               type="password"
               id="password"
               autoComplete="current-password"
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" type="checkbox" checked={rememberMe} onChange={handleCheckboxChange} />}
-              label="Remember me"
+              label="Beni Hatırla"
             />
             <Button
               type="submit"
@@ -161,17 +151,17 @@ const Login = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Giriş Yap
             </Button>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
-                  Forgot password?
+                  Şifremi Unuttum
                 </Link>
               </Grid>
               <Grid item>
                 <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  {"Hesabınız yok mu? Üye olun"}
                 </Link>
               </Grid>
             </Grid>
