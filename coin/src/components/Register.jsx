@@ -26,16 +26,14 @@ function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="">
+        Smurf Coin
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
     </Typography>
   );
 }
-
-// TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
@@ -67,25 +65,25 @@ export default function SignUp() {
 
     const validationErrors = {}
     if (!name.trim()) {
-      validationErrors.username = "username is required"
+      validationErrors.username = "Kullanıcı adı gerekli"
     }
 
     if (!email.trim()) {
-      validationErrors.email = "email is required"
+      validationErrors.email = "E-posta gereklidir"
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      validationErrors.email = "email is not valid"
+      validationErrors.email = "E-posta geçerli değil"
     }
 
     if (!password.trim()) {
-      validationErrors.password = "password is required"
+      validationErrors.password = "Şifre alanı boş bırakılamaz!"
     } else if (!/^(?=.*[A-Z])(?=.*[a-z])/.test(password)) {
-      validationErrors.password = "Bir büyük bir küçük harf içermeli"
+      validationErrors.password = "Şifre Bir büyük bir küçük harf içermeli"
     } else if (!/^(?=.*\d)/.test(password)) {
-      validationErrors.password = "Sayi içermeli"
+      validationErrors.password = "Şifre sayi içermeli"
     } else if (!/^(?=.*[.,;@$!%*?&])/.test(password)) {
-      validationErrors.password = "özel karaktere içermeli"
+      validationErrors.password = "Şifre özel karaktere içermeli"
     } else if (!/^.{8,12}$/.test(password)) {
-      validationErrors.password = "8-12 karakter içermeli"
+      validationErrors.password = "Şifre en az 8 en çok 12 karakter içermeli"
     }
 
     setErrors(validationErrors)
@@ -94,9 +92,6 @@ export default function SignUp() {
       const name = formData.name
       const email = formData.email
       const password = formData.password
-      //alert("Form Submitted successfully")
-
-
 
       console.log({
         email: data.get('email'),
@@ -106,16 +101,15 @@ export default function SignUp() {
       axios.post('http://localhost:3001/register', { name, email, password })
         .then(result => {
           console.log(result)
-          if (result.data == "Bu Email Zaten Mevcut!!!") {
-            alert("Bu Email Zaten Mevcut!!!")
-          }else{
-            alert("Form Submitted successfully")
+          if (result.data == "Bu Email Zaten Mevcut!") {
+            alert("Bu E-Posta Zaten Mevcut!")
+          } else {
+            alert("Form başarıyla gönderildi")
           }
-          //navigate('/login')
         })
         .catch(err => console.log(err))
 
-        
+
     }
   };
 
@@ -137,21 +131,21 @@ export default function SignUp() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Kayıt Ol
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-              <FormControl sx={{ m: 1, width: "40ch" }} variant="outlined">
+                <FormControl sx={{ m: 1, width: "40ch" }} variant="outlined">
                   <InputLabel htmlFor="outlined-adornment-password">
-                    Name
+                    Kullanıcı Adı
                   </InputLabel>
                   <OutlinedInput
                     required
                     fullWidth
                     id="Name"
                     onChange={handleChange}
-                    name = "name"
+                    name="name"
                     type="text"
                     label="Password"
                   />
@@ -160,9 +154,9 @@ export default function SignUp() {
               </Grid>
 
               <Grid item xs={12}>
-              <FormControl sx={{ m: 1, width: "40ch" }} variant="outlined">
+                <FormControl sx={{ m: 1, width: "40ch" }} variant="outlined">
                   <InputLabel htmlFor="outlined-adornment-password">
-                    Email
+                    E-Posta
                   </InputLabel>
                   <OutlinedInput
                     required
@@ -170,23 +164,23 @@ export default function SignUp() {
                     onChange={handleChange}
                     id="email"
                     type="text"
-                    name = "email"
+                    name="email"
                     label="email"
                   />
                 </FormControl>
                 {errors.email && <span>{errors.email}</span>}
               </Grid>
               <Grid item xs={12}>
-              <FormControl sx={{ m: 1, width: "40ch" }} variant="outlined">
+                <FormControl sx={{ m: 1, width: "40ch" }} variant="outlined">
                   <InputLabel htmlFor="outlined-adornment-password">
-                    Password
+                    Şifre
                   </InputLabel>
                   <OutlinedInput
                     required
                     fullWidth
                     onChange={handleChange}
                     id="outlined-adornment-password"
-                    name = "password"
+                    name="password"
                     type={showPassword ? "text" : "password"}
                     endAdornment={
                       <InputAdornment position="end">
@@ -211,7 +205,8 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
+                  label="
+                  Smurf Coin'in günlük haber bültenine abone olmak istiyorum."
                 />
               </Grid>
             </Grid>
@@ -221,12 +216,12 @@ export default function SignUp() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Kayıt Ol
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
+                <Link href="./Login.jsx" variant="body2">
+                  Zaten bir hesabım var.
                 </Link>
               </Grid>
             </Grid>
