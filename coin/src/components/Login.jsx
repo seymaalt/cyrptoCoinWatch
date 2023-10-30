@@ -12,13 +12,17 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+import axios from 'axios'
+
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="">
+        Smurf Coin
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -26,19 +30,77 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
-export default function SignIn() {
+const Login = () => {
+
+  const [email, setEmail] = useState()
+  const [password, setPassword] = useState()
+  const [rememberMe, setRememberMe] = useState(false);
+  const [location, setLocation] = useState("/");
+
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    // Sayfa yüklendiğinde LocalStorage'dan verileri kontrol et
+    const storedemail = localStorage.getItem('email');
+    const storedPassword = localStorage.getItem('password');
+    const storedRememberMe = localStorage.getItem('rememberMe') === 'true';
+
+    if (storedemail && storedPassword && storedRememberMe) {
+      setEmail(storedemail);
+      setPassword(storedPassword);
+      setRememberMe(storedRememberMe);
+    }
+
+  }, []);
+
+
+  const handleEmailChange = (e) => {
+    const { value } = e.target;
+    setEmail(value);
+
+    const savedPassword = localStorage.getItem(value);
+    if (savedPassword) {
+      setPassword(savedPassword);
+    }
+  };
+
+  const handleCheckboxChange = () => {
+    setRememberMe(!rememberMe);
+  };
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const email = data.get('email')
+    const password = data.get('password')
+    axios.post('http://localhost:3001/login', { email, password })
+      .then(result => {
+        console.log(result)
+        if (result.data == "Success") {
+          console.log({
+            email: data.get('email'),
+            password: data.get('password'),
+          });
+          alert("Form başarıyla gönderildi")
+          if (rememberMe) {
+            localStorage.setItem('email', email);
+            localStorage.setItem('password', password);
+            localStorage.setItem('rememberMe', true);
+          } else {
+            localStorage.removeItem('email');
+            localStorage.removeItem('password');
+            localStorage.removeItem('rememberMe');
+          }
+
+        }
+      })
+      .catch(err => console.log(err))
   };
+
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -56,7 +118,7 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Giriş Yap
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -64,7 +126,7 @@ export default function SignIn() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="E-Posta"
               name="email"
               autoComplete="email"
               autoFocus
@@ -74,14 +136,14 @@ export default function SignIn() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Şifre"
               type="password"
               id="password"
               autoComplete="current-password"
             />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              control={<Checkbox value="remember" color="primary" type="checkbox" checked={rememberMe} onChange={handleCheckboxChange} />}
+              label="Beni Hatırla"
             />
             <Button
               type="submit"
@@ -89,17 +151,17 @@ export default function SignIn() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Giriş Yap
             </Button>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
-                  Forgot password?
+                  Şifremi Unuttum
                 </Link>
               </Grid>
               <Grid item>
                 <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  {"Hesabınız yok mu? Üye olun"}
                 </Link>
               </Grid>
             </Grid>
@@ -110,3 +172,5 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
+
+export default Login
