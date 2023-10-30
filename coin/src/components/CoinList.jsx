@@ -28,8 +28,8 @@ import moment from "moment";
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
-const apiUrl = "https://api.livecoinwatch.com";
-const apiKey = "24782b95-0d2c-4dc3-b7cb-c3ab7b80de6b";
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -206,7 +206,7 @@ function Home() {
 
     const intervalId = setInterval(() => {
       fetchData();
-    }, 1000);
+    }, 100000);
     return () => {
       clearInterval(intervalId);
     };
@@ -277,7 +277,7 @@ function Home() {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
+              placeholder="Arama..."
               inputProps={{ "aria-label": "search" }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -291,20 +291,20 @@ function Home() {
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
-              <TableCell> Coin</TableCell>
-              <TableCell align="right">Price</TableCell>
-              <TableCell align="right">24h</TableCell>
-              <TableCell align="right">7d</TableCell>
-              <TableCell align="right">24h Volume</TableCell>
-              <TableCell align="right">Market Cap</TableCell>
-              <TableCell align="right">Weekly</TableCell>
+              <TableCell> Kripto Para</TableCell>
+              <TableCell align="right">Fiyat</TableCell>
+              <TableCell align="right">24 Saatlik</TableCell>
+              <TableCell align="right">Haftalık</TableCell>
+              <TableCell align="right">24 Saatlik Hacim</TableCell>
+              <TableCell align="right">Piyasa Değeri</TableCell>
+              <TableCell align="right">Haftalık Grafik</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {coinData
               .filter((coin) =>
                 (coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                coin.code.toLowerCase().includes(searchQuery.toLowerCase())) && (showFavorites ? favoriteCoins.includes(coin) : true)
+                  coin.code.toLowerCase().includes(searchQuery.toLowerCase())) && (showFavorites ? favoriteCoins.includes(coin) : true)
               )
               .map((coin) => (
                 <TableRow
@@ -377,24 +377,24 @@ function Home() {
                     })()}
                   </TableCell>
                   <TableCell align="right">
-                      <div
-                        style={{
-                          width: "160px",
-                          height: "80px",
-                          float: "right",
-                        }}
-                      >
-                        <Line
-                          data={
-                            coinChartData[coin.code] || {
-                              labels: [],
-                              datasets: [],
-                            }
+                    <div
+                      style={{
+                        width: "160px",
+                        height: "80px",
+                        float: "right",
+                      }}
+                    >
+                      <Line
+                        data={
+                          coinChartData[coin.code] || {
+                            labels: [],
+                            datasets: [],
                           }
-                          options={options}
-                        ></Line>
-                      </div>
-                    </TableCell>
+                        }
+                        options={options}
+                      ></Line>
+                    </div>
+                  </TableCell>
 
                 </TableRow>
               ))}
