@@ -2,11 +2,14 @@ const express = require("express")
 const mongoose = require('mongoose')
 const cors = require("cors")
 const UserModel = require('./models/User.jsx')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const cookieParser = require('cookie-parser')
 
 const app = express()
 app.use(express.json())
 app.use(cors())
-
+app.use(cookieParser())
 mongoose.connect("mongodb://127.0.0.1:27017/crypto-coin")
 
 app.post("/login", (req, res) => {
@@ -14,35 +17,38 @@ app.post("/login", (req, res) => {
     UserModel.findOne({ email: email })
         .then(user => {
             if (user) {
-                if (user.password == password) {
-                    res.json("Success")
-                } else {
-                    res.json("the password is incorrect")
-                }
-            } else {
-                res.json("no record existed")
+                bcrypt.compare(password, user.password, (err, response) => {
+                    if (response) {
+                        res.json("Success")
+                    } else {
+                        res.json("Şifre doğru değil")
+                    }
+                })
             }
         })
 })
 
 app.post('/register', (req, res) => {
 
-    const { email, password } = req.body
+    const { name, email, password } = req.body
     UserModel.findOne({ email: email })
         .then(user => {
             if (user) {
                 //alert("Bu Email Zaten Mevcut!!!!!!!!!!!!")
                 res.json("Bu Email Zaten Mevcut!!!")
+                console.log("Bu Email Zaten Mevcut!!!!!!!!!!!!!!!")
 
             } else {
-                UserModel.create(req.body)
-                    .then(users => res.json(users))
-                    .catch(err => res.json(err))
+                bcrypt.hash(password, 10)
+                    .then(hash => {
+                        UserModel.create({ name, email, password: hash })
+                            .then(users => res.json(users))
+                            .catch(err => res.json(err))
+                    }).catch(err => console.log(err.message))
             }
         })
-
-
 })
+
 
 app.listen(3001, () => {
     console.log("server is running")

@@ -76,29 +76,36 @@ const Login = () => {
     const data = new FormData(event.currentTarget);
     const email = data.get('email')
     const password = data.get('password')
-    axios.post('http://localhost:3001/login', { email, password })
-      .then(result => {
-        console.log(result)
-        if (result.data == "Success") {
-          console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-          });
-          alert("Form başarıyla gönderildi")
-          if (rememberMe) {
-            localStorage.setItem('email', email);
-            localStorage.setItem('password', password);
-            localStorage.setItem('rememberMe', true);
-          } else {
-            localStorage.removeItem('email');
-            localStorage.removeItem('password');
-            localStorage.removeItem('rememberMe');
-          }
+    if (!email || !password) {
+      //res.status(400).json("E-posta veya şifre eksik");
+      alert("E-posta veya şifre eksik")
+      return; // İşlemi burada sonlandır
+    } else {
+      axios.post('http://localhost:3001/login', { email, password })
+        .then(result => {
+          console.log(result)
+          if (result.data == "Success") {
+            console.log({
+              email: data.get('email'),
+              password: data.get('password'),
+            });
+            alert("Form başarıyla gönderildi")
+            if (rememberMe) {
+              localStorage.setItem('email', email);
+              localStorage.setItem('password', password);
+              localStorage.setItem('rememberMe', true);
+            } else {
+              localStorage.removeItem('email');
+              localStorage.removeItem('password');
+              localStorage.removeItem('rememberMe');
+            }
 
-        }
-      })
-      .catch(err => console.log(err))
-  };
+          }
+        })
+        .catch(err => console.log(err))
+    };
+  }
+
 
 
 

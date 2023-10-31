@@ -101,7 +101,7 @@ export default function SignUp() {
       axios.post('http://localhost:3001/register', { name, email, password })
         .then(result => {
           console.log(result)
-          if (result.data == "Bu Email Zaten Mevcut!") {
+          if (result.data == "Bu Email Zaten Mevcut!!!") {
             alert("Bu E-Posta Zaten Mevcut!")
           } else {
             alert("Form başarıyla gönderildi")
