@@ -18,8 +18,8 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const apiUrl = "https://api.livecoinwatch.com";
-const apiKey = "017af663-d62f-47e4-902b-049171b263ef";
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
 
 function OverviewBox() {
   const [coinData1, setCoinData1] = useState([]);
@@ -60,79 +60,79 @@ function OverviewBox() {
   return (
     <div style={{ marginBottom: "10px" }}>
       <Grid container spacing={3}>
-  <Grid item xs>
-    <Item> <TableContainer component={Paper}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ fontWeight: "bold" }}>Market Cap</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {coinData1.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {`$${row.data.cap.toLocaleString()}`}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer></Item>
-  </Grid>
-  <Grid item xs>
-    <Item>  <TableContainer component={Paper}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ fontWeight: "bold" }}>Liquidity</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {coinData1.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {`$${row.data.liquidity.toLocaleString()}`}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer></Item>
-  </Grid>
-  <Grid item xs>
-    <Item><TableContainer component={Paper}>
-        <Table  aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ fontWeight: "bold" }}>24h Volume</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {coinData1.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {`$${row.data.volume.toLocaleString()}`}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer></Item>
-  </Grid>
-</Grid>
-     
+        <Grid item xs>
+          <Item> <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ fontWeight: "bold" }}>Piyasa Değeri</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {coinData1.map((row) => (
+                  <TableRow
+                    key={row.name}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {`$${row.data.cap.toLocaleString()}`}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer></Item>
+        </Grid>
+        <Grid item xs>
+          <Item>  <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ fontWeight: "bold" }}>Likidite</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {coinData1.map((row) => (
+                  <TableRow
+                    key={row.name}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {`$${row.data.liquidity.toLocaleString()}`}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer></Item>
+        </Grid>
+        <Grid item xs>
+          <Item><TableContainer component={Paper}>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ fontWeight: "bold" }}>24 Saatlik Hacim</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {coinData1.map((row) => (
+                  <TableRow
+                    key={row.name}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {`$${row.data.volume.toLocaleString()}`}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer></Item>
+        </Grid>
+      </Grid>
+
     </div>
   );
-}  
+}
 
 export default OverviewBox;
