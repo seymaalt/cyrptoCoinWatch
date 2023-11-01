@@ -221,11 +221,7 @@ function Home() {
       },
     },
   };
-<<<<<<< HEAD
 
-  
-=======
->>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
   return (
     <div style={{ marginTop: "10px" }}>
       <div style={{ display: "flex" }}>
@@ -283,7 +279,6 @@ function Home() {
           </TableHead>
           <TableBody>
             {coinData
-<<<<<<< HEAD
               .filter(
                 (coin) =>
                   (coin.name
@@ -295,12 +290,7 @@ function Home() {
                       (showFavorites
                         ? favoriteCoins.includes(coin)
                         : true)
-=======
-              .filter((coin) =>
-                (coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  coin.code.toLowerCase().includes(searchQuery.toLowerCase())) && (showFavorites ? favoriteCoins.includes(coin) : true)
->>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
-              )
+                           )
               .map((coin) => (
                 <TableRow
                   key={coin.id}
@@ -394,10 +384,6 @@ function Home() {
                       ></Line>
                     </div>
                   </TableCell>
-<<<<<<< HEAD
-=======
-
->>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
                 </TableRow>
               ))}
           </TableBody>

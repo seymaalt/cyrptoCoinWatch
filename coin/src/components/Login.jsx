@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
-import * as React from 'react';
->>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
+
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -16,10 +13,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
-<<<<<<< HEAD
-=======
-import { useNavigate } from "react-router-dom";
->>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
 import axios from 'axios'
 
 
@@ -87,11 +80,7 @@ const Login = () => {
       alert("E-posta veya şifre eksik")
       return; // İşlemi burada sonlandır
     } else {
-<<<<<<< HEAD
       axios.post('http://localhost:3333/users/login', { email, password })
-=======
-      axios.post('http://localhost:3001/login', { email, password })
->>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
         .then(result => {
           console.log(result)
           if (result.data == "Success") {
