@@ -22,14 +22,12 @@ import {
   LinearScale,
   PointElement,
 } from "chart.js";
-
-
 import moment from "moment";
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
-const apiUrl = "https://api.livecoinwatch.com";
-const apiKey = "aff350dd-38c3-4fad-8f9d-8230089b3dde";
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -75,15 +73,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function ListItem({ item, onToggleFavorite }) {
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const toggleFavorite = () => {
+  const toggleFavorite = async () => {
     setIsFavorite(!isFavorite);
     onToggleFavorite(item, !isFavorite);
+    console.log(isFavorite);
   };
 
   return (
     <div>
       <div style={{ align: "left" }} onClick={toggleFavorite}>
         {isFavorite ? <CircleIcon color="primary" /> : <PanoramaFishEyeIcon />}
+        
       </div>
     </div>
   );
@@ -118,20 +118,7 @@ function Home() {
         }
       );
       if (previousData.length > 0) {
-        const updatedCoinData = response.data.map((coin, index) => {
-          const previousDayDelta = (previousData[index].delta.day - 1) * 100;
-          const currentDayDelta = (coin.delta.day - 1) * 100;
-
-          if (currentDayDelta > 0) {
-            coin.delta.dayColor = "green";
-          } else if (currentDayDelta < 0) {
-            coin.delta.dayColor = "red";
-          } else {
-            coin.delta.dayColor = "black";
-          }
-
-          return coin;
-        });
+        const updatedCoinData = response.data.map(coin);
         setCoinData(updatedCoinData);
       } else {
         setCoinData(response.data);
@@ -161,14 +148,12 @@ function Home() {
 
         const coinChartData = chartResponse.data.history.map((value) => ({
           x: value.date,
-          y: value.rate.toFixed(2),
+          y: value.rate.toFixed(8),
         }));
-
-        console.log(chartResponse.data);
 
         var color;
         {
-          coin.delta.week > 1.0099 ? (color = "green") : (color = "red");
+          coin.delta.week > 1 ? (color = "green") : (color = "red");
         }
 
         setCoinChartData((prevData) => ({
@@ -179,17 +164,9 @@ function Home() {
             ),
             datasets: [
               {
-                label: "Dataset 1",
-                animations: {
-                  y: {
-                    duration: 2000,
-                    delay: 500,
-                  },
-                },
                 data: coinChartData.map((val) => val.y),
                 borderColor: color,
                 backgroundColor: color,
-                fill: 1,
               },
             ],
           },
@@ -200,19 +177,18 @@ function Home() {
     }
   };
 
-
   useEffect(() => {
     fetchData();
 
     const intervalId = setInterval(() => {
       fetchData();
-    }, 1000);
+    }, 60000);
     return () => {
       clearInterval(intervalId);
     };
   }, []);
 
-  const toggleFavoriteCount = (item, isFavorite) => {
+  const toggleFavoriteCount = async (item, isFavorite) => {
     if (isFavorite) {
       setFavoriteCount(favoriteCount + 1);
       setFavoriteCoins([...favoriteCoins, item]);
@@ -245,6 +221,11 @@ function Home() {
       },
     },
   };
+<<<<<<< HEAD
+
+  
+=======
+>>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
   return (
     <div style={{ marginTop: "10px" }}>
       <div style={{ display: "flex" }}>
@@ -277,7 +258,7 @@ function Home() {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
+              placeholder="Arama..."
               inputProps={{ "aria-label": "search" }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -291,20 +272,34 @@ function Home() {
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
-              <TableCell> Coin</TableCell>
-              <TableCell align="right">Price</TableCell>
-              <TableCell align="right">24h</TableCell>
-              <TableCell align="right">7d</TableCell>
-              <TableCell align="right">24h Volume</TableCell>
-              <TableCell align="right">Market Cap</TableCell>
-              <TableCell align="right">Weekly</TableCell>
+              <TableCell>Kripto Para</TableCell>
+              <TableCell align="right">Fiyat</TableCell>
+              <TableCell align="right">24 Saatlik</TableCell>
+              <TableCell align="right">Haftalık</TableCell>
+              <TableCell align="right">24 Saatlik Hacim</TableCell>
+              <TableCell align="right">Piyasa Değeri</TableCell>
+              <TableCell align="right">Haftalık Grafik</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {coinData
+<<<<<<< HEAD
+              .filter(
+                (coin) =>
+                  (coin.name
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase()) ||
+                    coin.code
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())) &&
+                      (showFavorites
+                        ? favoriteCoins.includes(coin)
+                        : true)
+=======
               .filter((coin) =>
                 (coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                coin.code.toLowerCase().includes(searchQuery.toLowerCase())) && (showFavorites ? favoriteCoins.includes(coin) : true)
+                  coin.code.toLowerCase().includes(searchQuery.toLowerCase())) && (showFavorites ? favoriteCoins.includes(coin) : true)
+>>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
               )
               .map((coin) => (
                 <TableRow
@@ -312,10 +307,14 @@ function Home() {
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    <ListItem item={coin} onToggleFavorite={toggleFavoriteCount} />
+                    <ListItem
+                      item={coin}
+                      isFavorite={coin.isFavorite}
+                      onToggleFavorite={toggleFavoriteCount}
+                    />
                     <div style={{ marginLeft: "8px" }}>{coin.rank}</div>
                   </TableCell>
-                  <TableCell style={{}}>
+                  <TableCell >
                     <div style={{ display: "flex" }}>
                       <Image
                         src={coin.png32}
@@ -377,25 +376,28 @@ function Home() {
                     })()}
                   </TableCell>
                   <TableCell align="right">
-                      <div
-                        style={{
-                          width: "160px",
-                          height: "80px",
-                          float: "right",
-                        }}
-                      >
-                        <Line
-                          data={
-                            coinChartData[coin.code] || {
-                              labels: [],
-                              datasets: [],
-                            }
+                    <div
+                      style={{
+                        width: "160px",
+                        height: "80px",
+                        float: "right",
+                      }}
+                    >
+                      <Line
+                        data={
+                          coinChartData[coin.code] || {
+                            labels: [],
+                            datasets: [],
                           }
-                          options={options}
-                        ></Line>
-                      </div>
-                    </TableCell>
+                        }
+                        options={options}
+                      ></Line>
+                    </div>
+                  </TableCell>
+<<<<<<< HEAD
+=======
 
+>>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
                 </TableRow>
               ))}
           </TableBody>

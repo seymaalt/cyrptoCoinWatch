@@ -2,8 +2,11 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+<<<<<<< HEAD
+=======
 import MoreIcon from "@mui/icons-material/MoreVert";
 import IconButton from "@mui/material/IconButton";
+>>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
 import Button from "@mui/material/Button";
 import Logo from "../assets/Logo.png";
 import LoginModal from "./LoginModal.jsx";
