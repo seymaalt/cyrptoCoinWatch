@@ -1,6 +1,10 @@
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
+<<<<<<< HEAD
+=======
+import TextField from '@mui/material/TextField';
+>>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
@@ -17,7 +21,12 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { IconButton } from "@mui/material";
+<<<<<<< HEAD
 import  { useState } from "react";
+=======
+import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+>>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
 import axios from 'axios'
 
 function Copyright(props) {
@@ -96,7 +105,11 @@ export default function SignUp() {
         password: data.get('password'),
       });
 
+<<<<<<< HEAD
       axios.post('http://localhost:3333/users/register', { name, email, password })
+=======
+      axios.post('http://localhost:3001/register', { name, email, password })
+>>>>>>> e210977b871f6f0dd83c3c0047e55e414d7e742d
         .then(result => {
           console.log(result)
           if (result.data == "Bu Email Zaten Mevcut!!!") {
